@@ -20,15 +20,89 @@
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    public SeamCarver(Picture picture)                // create a seam carver object based on the given picture
-    public Picture picture()                          // current picture
-    public     int width()                            // width of current picture
-    public     int height()                           // height of current picture
-    public  double energy(int x, int y)               // energy of pixel at column x and row y
-    public   int[] findHorizontalSeam()               // sequence of indices for horizontal seam
-    public   int[] findVerticalSeam()                 // sequence of indices for vertical seam
-    public    void removeHorizontalSeam(int[] seam)   // remove horizontal seam from current picture
-    public    void removeVerticalSeam(int[] seam)     // remove vertical seam from current picture
+    
+    /**
+     * Create a seam carver object based on the given picture.
+     * 
+     * @param picture 
+     */
+    public SeamCarver(Picture picture) {
+        
+    }
+    
+    /**
+     * Current picture.
+     * 
+     * @return 
+     */
+    public Picture picture() {
+        
+    }
+    
+    /**
+     * Width of current picture.
+     * 
+     * @return 
+     */
+    public int width() {
+        
+    }
+    
+    /**
+     * Height of current picture.
+     * 
+     * @return 
+     */
+    public int height() {
+        
+    }
+    
+    /**
+     * Energy of pixel at column x and row y.
+     * 
+     * @param x
+     * @param y
+     * @return 
+     */
+    public double energy(int x, int y) {
+        
+    }
+    
+    /**
+     * Sequence of indices for horizontal seam.
+     * 
+     * @return 
+     */
+    public int[] findHorizontalSeam() {
+        
+    }
+    
+    /**
+     * Sequence of indices for vertical seam.
+     * 
+     * @return 
+     */
+    public int[] findVerticalSeam() {
+        
+    }
+    
+    /**
+     * Remove horizontal seam from current picture.
+     * 
+     * @param seam 
+     */
+    public void removeHorizontalSeam(int[] seam) {
+        
+    }
+    
+    /**
+     * Remove vertical seam from current picture.
+     * 
+     * @param seam 
+     */
+    public void removeVerticalSeam(int[] seam) {
+        
+    }
 
     /**
      * @param args the command line arguments

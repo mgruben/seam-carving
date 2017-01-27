@@ -1,3 +1,6 @@
+
+import edu.princeton.cs.algs4.Picture;
+
 /*
  * Copyright (C) 2017 Michael <GrubenM@GMail.com>
  *

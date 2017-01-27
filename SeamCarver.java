@@ -113,6 +113,8 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeHorizontalSeam(int[] seam) {
+        if (pic.height() <= 1)
+            throw new java.lang.IllegalArgumentException("Picture too short");
         if (seam == null) throw new java.lang.NullPointerException();
         if (seam.length != pic.width())
             throw new java.lang.IllegalArgumentException("Invalid seam length");
@@ -140,6 +142,8 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeVerticalSeam(int[] seam) {
+        if (pic.width() <= 1)
+            throw new java.lang.IllegalArgumentException("Picture too narrow");
         if (seam == null) throw new java.lang.NullPointerException();
         if (seam.length != pic.height())
             throw new java.lang.IllegalArgumentException();

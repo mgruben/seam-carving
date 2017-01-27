@@ -146,7 +146,7 @@ public class SeamCarver {
             throw new java.lang.IllegalArgumentException("Picture too narrow");
         if (seam == null) throw new java.lang.NullPointerException();
         if (seam.length != pic.height())
-            throw new java.lang.IllegalArgumentException();
+            throw new java.lang.IllegalArgumentException("Invalid seam length");
         
         int xLast = seam[0];
         for (int x: seam) {

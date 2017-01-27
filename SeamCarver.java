@@ -46,19 +46,19 @@ public class SeamCarver {
     /**
      * Width of current picture.
      * 
-     * @return 
+     * @return the width of the current picture.
      */
     public int width() {
-        
+        return pic.width();
     }
     
     /**
      * Height of current picture.
      * 
-     * @return 
+     * @return the height of the current picture.
      */
     public int height() {
-        
+        return pic.height();
     }
     
     /**

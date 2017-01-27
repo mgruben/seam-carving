@@ -108,12 +108,25 @@ public class SeamCarver {
      * @param seam the given seam.
      * @throws NullPointerException if the given <em>seam</em> is {@code null}.
      * @throws IllegalArgumentException if the given <em>seam</em> does not
-     *         match the picture width.
+     *         match the picture width, if an index in the given <em>seam</em>
+     *         is negative or is taller than the picture, or if two adjacent
+     *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeHorizontalSeam(int[] seam) {
         if (seam == null) throw new java.lang.NullPointerException();
         if (seam.length != pic.width())
-            throw new java.lang.IllegalArgumentException();
+            throw new java.lang.IllegalArgumentException("Invalid seam length");
+        
+        int yLast = seam[0];
+        for (int y: seam) {
+            if (y >= pic.height() || y < 0)
+                throw new java.lang.IllegalArgumentException("Index out of bounds");
+            if (Math.abs(y - yLast) > 1)
+                throw new java.lang.IllegalArgumentException("Index not adjacent");
+            yLast = y;
+        }
+        
+        
     }
     
     /**
@@ -122,12 +135,23 @@ public class SeamCarver {
      * @param seam the given seam.
      * @throws NullPointerException if the given <em>seam</em> is {@code null}.
      * @throws IllegalArgumentException if the given <em>seam</em> does not
-     *         match the picture height.
+     *         match the picture height, if an index in the given <em>seam</em>
+     *         is negative or is wider than the picture, or if two adjacent
+     *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeVerticalSeam(int[] seam) {
         if (seam == null) throw new java.lang.NullPointerException();
         if (seam.length != pic.height())
             throw new java.lang.IllegalArgumentException();
+        
+        int xLast = seam[0];
+        for (int x: seam) {
+            if (x >= pic.height() || x < 0)
+                throw new java.lang.IllegalArgumentException("Index out of bounds");
+            if (Math.abs(x - xLast) > 1)
+                throw new java.lang.IllegalArgumentException("Index not adjacent");
+            xLast = x;
+        }
     }
 
     /**

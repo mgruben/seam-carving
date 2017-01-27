@@ -33,7 +33,9 @@ public class SeamCarver {
      */
     public SeamCarver(Picture picture) {
         if (picture == null) throw new java.lang.NullPointerException();
-        pic = picture;
+        
+        // Defensively copy the given picture
+        pic = new Picture(picture);
     }
     
     /**

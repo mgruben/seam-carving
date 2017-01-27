@@ -73,11 +73,12 @@ public class SeamCarver {
      * @param y
      * @return the energy of the pixel at column <em>x</em> and row <em>y</em>.
      * @throws IndexOutOfBoundsException if <em>x</em> is greater than
-     *         or equal to the image width, or if <em>y</em> is greater than or
-     *         equal to the image height.
+     *         or equal to the image width, if <em>y</em> is greater than or
+     *         equal to the image height, or if <em>x</em> or <em>y</em> are
+     *         negative.
      */
     public double energy(int x, int y) {
-        if (x >= pic.width() || y >= pic.height())
+        if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
             throw new java.lang.IndexOutOfBoundsException();
     }
     

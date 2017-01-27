@@ -64,12 +64,21 @@ public class SeamCarver {
     /**
      * Energy of pixel at column x and row y.
      * 
+     * Note that (0,0) is the pixel at the top-left corner of the image.
+     * 
+     * The dual-gradient energy function is used to compute the energy of a
+     * pixel.
+     * 
      * @param x
      * @param y
-     * @return 
+     * @return the energy of the pixel at column <em>x</em> and row <em>y</em>.
+     * @throws IndexOutOfBoundsException if <em>x</em> is greater than
+     *         or equal to the image width, or if <em>y</em> is greater than or
+     *         equal to the image height.
      */
     public double energy(int x, int y) {
-        
+        if (x >= pic.width() || y >= pic.height())
+            throw new java.lang.IndexOutOfBoundsException();
     }
     
     /**

@@ -28,9 +28,11 @@ public class SeamCarver {
     /**
      * Create a seam carver object based on the given picture.
      * 
-     * @param picture 
+     * @param picture the given picture
+     * @throws NullPointerException if the given picture is {@code null}.
      */
     public SeamCarver(Picture picture) {
+        if (picture == null) throw new java.lang.NullPointerException();
         pic = picture;
     }
     

@@ -91,12 +91,12 @@ public class SeamCarver {
             return (double) 1000;
         
         // Store pixel values in four [R,G,B] arrays.
-        int[] u = getColorValues(pic.get(x, y - 1));
-        int[] d = getColorValues(pic.get(x, y + 1));
-        int[] l = getColorValues(pic.get(x - 1, y));
-        int[] r = getColorValues(pic.get(x + 1, y));
+        int[] up = getColorValues(pic.get(x, y - 1));
+        int[] down = getColorValues(pic.get(x, y + 1));
+        int[] left = getColorValues(pic.get(x - 1, y));
+        int[] right = getColorValues(pic.get(x + 1, y));
         
-        return Math.sqrt(gradient(u,d) + gradient(l,r));
+        return Math.sqrt(gradient(up,down) + gradient(left,right));
     }
     
     /**

@@ -1,5 +1,6 @@
 
 import edu.princeton.cs.algs4.Picture;
+import java.awt.Color;
 
 /*
  * Copyright (C) 2017 Michael <GrubenM@GMail.com>
@@ -88,6 +89,43 @@ public class SeamCarver {
         // Return 1000.0 for border pixels
         if (x == 0 || y == 0 || x == pic.width() - 1 || y == pic.height() - 1)
             return (double) 1000;
+        
+        // Store pixel values in four [R,G,B] arrays.
+        int[] u = getColorValues(pic.get(x, y - 1));
+        int[] d = getColorValues(pic.get(x, y + 1));
+        int[] l = getColorValues(pic.get(x - 1, y));
+        int[] r = getColorValues(pic.get(x + 1, y));
+        
+        return Math.sqrt(gradient(u,d) + gradient(l,r));
+    }
+    
+    /**
+     * Returns a 3-integer array representing the [R,G,B] values of the given
+     * Color.
+     * 
+     * @param c the given color
+     * @return an integer array of [R,G,B]
+     */
+    private int[] getColorValues(Color c) {
+        int[] a = new int[3];
+        a[0] = c.getRed();
+        a[1] = c.getGreen();
+        a[2] = c.getBlue();
+        return a;
+    }
+    
+    /**
+     * Returns the gradient computed from the two [R,G,B] arrays <em>a</em> and
+     * <em>b</em>.
+     * 
+     * @param a
+     * @param b
+     * @return the gradient of <em>a</em> and <em>b</em>.
+     */
+    private double gradient(int[] a, int[] b) {
+        return Math.pow(a[0] - b[0], 2) +
+               Math.pow(a[1] - b[1], 2) +
+               Math.pow(a[2] - b[2], 2);
     }
     
     /**

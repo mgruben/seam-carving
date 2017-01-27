@@ -105,19 +105,21 @@ public class SeamCarver {
     /**
      * Remove horizontal seam from current picture.
      * 
-     * @param seam 
+     * @param seam the given seam.
+     * @throws NullPointerException if the given <em>seam</em> is {@code null}
      */
     public void removeHorizontalSeam(int[] seam) {
-        
+        if (seam == null) throw new java.lang.NullPointerException();
     }
     
     /**
      * Remove vertical seam from current picture.
      * 
-     * @param seam 
+     * @param seam the given seam.
+     * @throws NullPointerException if the given <em>seam</em> is {@code null}
      */
     public void removeVerticalSeam(int[] seam) {
-        
+        if (seam == null) throw new java.lang.NullPointerException();
     }
 
     /**

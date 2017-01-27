@@ -84,6 +84,10 @@ public class SeamCarver {
     public double energy(int x, int y) {
         if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
             throw new java.lang.IndexOutOfBoundsException();
+        
+        // Return 1000.0 for border pixels
+        if (x == 0 || y == 0 || x == pic.width() - 1 || y == pic.height() - 1)
+            return (double) 1000;
     }
     
     /**

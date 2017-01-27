@@ -106,20 +106,28 @@ public class SeamCarver {
      * Remove horizontal seam from current picture.
      * 
      * @param seam the given seam.
-     * @throws NullPointerException if the given <em>seam</em> is {@code null}
+     * @throws NullPointerException if the given <em>seam</em> is {@code null}.
+     * @throws IllegalArgumentException if the given <em>seam</em> does not
+     *         match the picture width.
      */
     public void removeHorizontalSeam(int[] seam) {
         if (seam == null) throw new java.lang.NullPointerException();
+        if (seam.length != pic.width())
+            throw new java.lang.IllegalArgumentException();
     }
     
     /**
      * Remove vertical seam from current picture.
      * 
      * @param seam the given seam.
-     * @throws NullPointerException if the given <em>seam</em> is {@code null}
+     * @throws NullPointerException if the given <em>seam</em> is {@code null}.
+     * @throws IllegalArgumentException if the given <em>seam</em> does not
+     *         match the picture height.
      */
     public void removeVerticalSeam(int[] seam) {
         if (seam == null) throw new java.lang.NullPointerException();
+        if (seam.length != pic.height())
+            throw new java.lang.IllegalArgumentException();
     }
 
     /**

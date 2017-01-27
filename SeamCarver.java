@@ -23,6 +23,7 @@ import edu.princeton.cs.algs4.Picture;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
+    Picture pic;
     
     /**
      * Create a seam carver object based on the given picture.
@@ -30,13 +31,13 @@ public class SeamCarver {
      * @param picture 
      */
     public SeamCarver(Picture picture) {
-        
+        pic = picture;
     }
     
     /**
      * Current picture.
      * 
-     * @return 
+     * @return the current picture.
      */
     public Picture picture() {
         

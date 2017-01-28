@@ -26,10 +26,10 @@ import java.util.Arrays;
  */
 public class SeamCarver {
     Picture pic;
-    int[][] energy;
+    double[][] energy;
     
-    int[][] distTo;
-    int distToSink;
+    double[][] distTo;
+    double distToSink;
     
     int[][] edgeTo;
     int edgeToSink;
@@ -47,9 +47,17 @@ public class SeamCarver {
         pic = new Picture(picture);
         
         
-        // Set the dimensions of the distTo and edgeTo arrays
-        distTo = new int[pic.height()][pic.width()];
+        // Set the dimensions of the distTo, edgeTo, and energy arrays
+        distTo = new double[pic.height()][pic.width()];
         edgeTo = new int[pic.height()][pic.width()];
+        energy = new double[pic.height()][pic.width()];
+        
+        // Pre-calculate the energy array
+        for (int i = 0; i < pic.height(); i++) {
+            for (int j = 0; j < pic.width(); j++) {
+                energy[i][j] = calcEnergy(j, i);
+            }
+        }
     }
     
     /**
@@ -95,10 +103,33 @@ public class SeamCarver {
      *         equal to the image height, or if <em>x</em> or <em>y</em> are
      *         negative.
      */
-    public double energy(int x, int y) {
+    public double energy(int x, int y) {        
         if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
             throw new java.lang.IndexOutOfBoundsException();
         
+        return energy[y][x];
+    }
+        
+    /**
+     * Helper method to calculate the energy of pixel at column x and row y.
+     * 
+     * Note that (0,0) is the pixel at the top-left corner of the image.
+     * 
+     * The dual-gradient energy function is used to compute the energy of a
+     * pixel.
+     * 
+     * @param x
+     * @param y
+     * @return the energy of the pixel at column <em>x</em> and row <em>y</em>.
+     * @throws IndexOutOfBoundsException if <em>x</em> is greater than
+     *         or equal to the image width, if <em>y</em> is greater than or
+     *         equal to the image height, or if <em>x</em> or <em>y</em> are
+     *         negative.
+     */
+    private double calcEnergy(int x, int y) {        
+        if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
+            throw new java.lang.IndexOutOfBoundsException();
+                
         // Return 1000.0 for border pixels
         if (x == 0 || y == 0 || x == pic.width() - 1 || y == pic.height() - 1)
             return (double) 1000;
@@ -147,7 +178,7 @@ public class SeamCarver {
      * @return 
      */
     public int[] findHorizontalSeam() {
-        
+        return new int[0];
     }
     
     /**
@@ -158,12 +189,82 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         
         // Reset our distTo and edgeTo values for a new search
-        distToSink = Integer.MAX_VALUE;
+        distToSink = Double.POSITIVE_INFINITY;
         edgeToSink = Integer.MAX_VALUE;
-        for (int[] r: distTo) Arrays.fill(r, Integer.MAX_VALUE);
+        for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
         for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
+        // Relax the entire top row
+        Arrays.fill(distTo[0], (double) 1000);
+        Arrays.fill(edgeTo[0], -1);
         
+        // Visit all pixels from the top, diagonally to the right
+        for (int top = pic.width() - 1; top >= 0; top--) {
+            for (int depth = 0;
+                    depth + top < pic.width() && depth < pic.height();
+                    depth++) {
+                visit(depth, depth + top);
+            }
+        }
+        // Visit all pixels from the left side, diagonally to the right
+        for (int depth = 1; depth < pic.height(); depth++) {
+            for (int out = 0;
+                    out < pic.width() && depth + out < pic.height();
+                    out++) {
+                visit(depth + out, out);
+            }
+        }
+        
+        // Add the path to the seam[]
+        int[] seam = new int[pic.height()];
+        seam[pic.height() - 1] = edgeToSink;
+        
+        for (int i = pic.height() - 1; i > 0; i--) {
+            seam[i - 1] = edgeTo[i][seam[i]];
+        }
+        
+        return seam;
+    }
+    
+    private void visit(int i, int j) {
+        
+        // Only relax the sink
+        if (i == pic.height() - 1) {
+            relax(i, j);
+        }
+        
+        // Right edge; relax below and to the left
+        else if (j == pic.width() - 1) {
+            relax(i, j, i + 1, j - 1);
+            relax(i, j, i + 1, j);
+        }
+        
+        // Left edge; relax below and to the right
+        else if (j == 0) {
+            relax(i, j, i + 1, j);
+            relax(i, j, i + 1, j + 1);
+        }
+        
+        // Middle pixel; relax left, below, and right
+        else {
+            relax(i, j, i + 1, j - 1);
+            relax(i, j, i + 1, j);
+            relax(i, j, i + 1, j + 1);
+        }
+    }
+    
+    private void relax(int i, int j) {
+        if (distToSink > distTo[i][j]) {
+            distToSink = distTo[i][j];
+            edgeToSink = j;
+        }
+    }
+    
+    private void relax(int i1, int j1, int i2, int j2) {
+        if (distTo[i2][j2] > distTo[i1][j1] + energy[i2][j2]) {
+            distTo[i2][j2] = distTo[i1][j1] + energy[i2][j2];
+            edgeTo[i2][j2] = j1;
+        }
     }
     
     /**

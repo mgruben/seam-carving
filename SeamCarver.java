@@ -169,7 +169,7 @@ public class SeamCarver {
         int[] left = getColorValues(color[y][x - 1]);
         int[] right = getColorValues(color[y][x + 1]);
         
-        return Math.sqrt(gradient(up,down) + gradient(left,right));
+        return Math.sqrt(gradient(up, down) + gradient(left, right));
     }
     
     /**

@@ -83,10 +83,12 @@ public class SeamCarver {
      * @return the current picture.
      */
     public Picture picture() {
-        // If pic is unchanged, return pic
-        if (height() == pic.height() && width() == pic.width()) return pic;
+        // If pic is unchanged, return a defensive copy of pic
+        if (height() == pic.height() && width() == pic.width())
+            return new Picture(pic);
         
-        // Otherwise, create a new pic with the updated color information
+        // Otherwise, create a new pic with the updated color information,
+        // and return a defensive copy of that pic
         else {
             pic = new Picture(width(), height());
             for (int i = 0; i < height(); i++) {
@@ -94,7 +96,7 @@ public class SeamCarver {
                     pic.set(j, i, color[i][j]);
                 }
             }
-            return pic;
+            return new Picture(pic);
         }
     }
     

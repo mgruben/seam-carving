@@ -204,7 +204,7 @@ public class SeamCarver {
     /**
      * Sequence of indices for horizontal seam.
      * 
-     * @return 
+     * @return the sequence of indices for the horizontal seam.
      */
     public int[] findHorizontalSeam() {
         transposed = true;
@@ -256,7 +256,7 @@ public class SeamCarver {
     /**
      * Sequence of indices for vertical seam.
      * 
-     * @return 
+     * @return the sequence of indices for the vertical seam.
      */
     public int[] findVerticalSeam() {
         transposed = false;
@@ -301,6 +301,12 @@ public class SeamCarver {
         return seam;
     }
     
+    /**
+     * Given an index, relax the vertices adjacent to that index.
+     * 
+     * @param i the up-and-down index
+     * @param j the left-and-right index
+     */
     private void visit(int i, int j) {
         if (transposed) {
             // Only relax the sink
@@ -355,6 +361,14 @@ public class SeamCarver {
         }
     }
     
+    /**
+     * Given an index, relax the sink vertex from that index.
+     * 
+     * This method should only be called on the "last" vertices in the image.
+     * 
+     * @param i the up-and-down index
+     * @param j the left-and-right index
+     */
     private void relax(int i, int j) {
         if (validIndex(i, j)) {
             if (distToSink > distTo[i][j]) {
@@ -365,6 +379,16 @@ public class SeamCarver {
         }
     }
     
+    /**
+     * Given index 1 and index 2, relaxes index 2 from index 1.
+     * 
+     * This method should not be called on the "last" vertices in the image.
+     * 
+     * @param i1 the up-and-down index of index 1
+     * @param j1 the left-and-right index of index 1
+     * @param i2 the up-and-down index of index 2
+     * @param j2 the left-and-right index of index 1
+     */
     private void relax(int i1, int j1, int i2, int j2) {
         if (validIndex(i1, j1) && validIndex(i2, j2)) {
             if (distTo[i2][j2] > distTo[i1][j1] + energy[i2][j2]) {

@@ -25,16 +25,16 @@ import java.util.Arrays;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    Picture pic;
-    double[][] energy;
+    private Picture pic;
+    private double[][] energy;
     
-    double[][] distTo;
-    double distToSink;
+    private double[][] distTo;
+    private double distToSink;
     
-    int[][] edgeTo;
-    int edgeToSink;
+    private int[][] edgeTo;
+    private int edgeToSink;
     
-    boolean transposed;
+    private boolean transposed;
     
     /**
      * Create a seam carver object based on the given picture.

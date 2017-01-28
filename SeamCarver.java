@@ -34,6 +34,8 @@ public class SeamCarver {
     int[][] edgeTo;
     int edgeToSink;
     
+    boolean transposed;
+    
     /**
      * Create a seam carver object based on the given picture.
      * 
@@ -45,7 +47,7 @@ public class SeamCarver {
         
         // Defensively copy the given picture
         pic = new Picture(picture);
-        
+        transposed = false;
         
         // Set the dimensions of the distTo, edgeTo, and energy arrays
         distTo = new double[pic.height()][pic.width()];
@@ -179,6 +181,14 @@ public class SeamCarver {
      */
     public int[] findHorizontalSeam() {
         return new int[0];
+    }
+    
+    /**
+     * Transposes the current picture, such that every (x, y) pixel is assigned
+     * instead to (y, x).
+     */
+    private void transpose() {
+        pic.
     }
     
     /**

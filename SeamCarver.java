@@ -26,6 +26,7 @@ import java.util.Arrays;
  */
 public class SeamCarver {
     private Picture pic;
+    private Color[][] color;
     private double[][] energy;
     
     private double[][] distTo;
@@ -47,12 +48,21 @@ public class SeamCarver {
         
         // Defensively copy the given picture
         pic = new Picture(picture);
-        transposed = false;
+        
+        // Store the picture's color information 
+        color = new Color[pic.height()][pic.width()];
         
         // Set the dimensions of the distTo, edgeTo, and energy arrays
         distTo = new double[pic.height()][pic.width()];
         edgeTo = new int[pic.height()][pic.width()];
         energy = new double[pic.height()][pic.width()];
+        
+        // Store color information
+        for (int i = 0; i < pic.height(); i++) {
+            for (int j = 0; j < pic.width(); j++) {
+                color[i][j] = pic.get(j, i);
+            }
+        }
         
         // Pre-calculate the energy array
         for (int i = 0; i < pic.height(); i++) {
@@ -137,10 +147,10 @@ public class SeamCarver {
             return (double) 1000;
         
         // Store pixel values in four [R,G,B] arrays.
-        int[] up = getColorValues(pic.get(x, y - 1));
-        int[] down = getColorValues(pic.get(x, y + 1));
-        int[] left = getColorValues(pic.get(x - 1, y));
-        int[] right = getColorValues(pic.get(x + 1, y));
+        int[] up = getColorValues(color[y - 1][x]);
+        int[] down = getColorValues(color[y + 1][x]);
+        int[] left = getColorValues(color[y][x - 1]);
+        int[] right = getColorValues(color[y][x + 1]);
         
         return Math.sqrt(gradient(up,down) + gradient(left,right));
     }

@@ -25,8 +25,8 @@ import java.util.Arrays;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    private Picture pic;
-    private Color[][] color;
+    // [y][x][R,G,B]
+    private int[][] color;
     private double[][] energy;
     
     private double[][] distTo;
@@ -35,6 +35,7 @@ public class SeamCarver {
     private int[][] edgeTo;
     private int edgeToSink;
     
+    // The current width and height
     private int w;
     private int h;
     
@@ -49,15 +50,14 @@ public class SeamCarver {
     public SeamCarver(Picture picture) {
         if (picture == null) throw new java.lang.NullPointerException();
         
-        // Defensively copy the given picture
-        pic = new Picture(picture);
-        
         // Initialize the dimensions of the picture
-        w = pic.width();
-        h = pic.height();
+        w = picture.width();
+        h = picture.height();
         
-        // Store the picture's color information 
-        color = new Color[h][w];
+        // Store the picture's color information in an int array,
+        // using the RGB coding described at:
+        // http://docs.oracle.com/javase/7/docs/api/java/awt/Color.html#getRGB()
+        color = new int[h][w];
         
         // Set the dimensions of the distTo, edgeTo, and energy arrays
         energy = new double[h][w];
@@ -65,7 +65,7 @@ public class SeamCarver {
         // Store color information
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                color[i][j] = pic.get(j, i);
+                color[i][j] = picture.get(j, i).getRGB();
             }
         }
         
@@ -83,21 +83,16 @@ public class SeamCarver {
      * @return the current picture.
      */
     public Picture picture() {
-        // If pic is unchanged, return a defensive copy of pic
-        if (height() == pic.height() && width() == pic.width())
-            return new Picture(pic);
         
-        // Otherwise, create a new pic with the updated color information,
-        // and return a defensive copy of that pic
-        else {
-            pic = new Picture(width(), height());
-            for (int i = 0; i < height(); i++) {
-                for (int j = 0; j < width(); j++) {
-                    pic.set(j, i, color[i][j]);
-                }
+        // Create a new pic with the stored color information,
+        // and return that pic
+        Picture pic = new Picture(width(), height());
+        for (int i = 0; i < height(); i++) {
+            for (int j = 0; j < width(); j++) {
+                pic.set(j, i, new Color(color[i][j]));
             }
-            return new Picture(pic);
         }
+        return new Picture(pic);
     }
     
     /**
@@ -165,42 +160,27 @@ public class SeamCarver {
         if (x == 0 || y == 0 || x == width() - 1 || y == height() - 1)
             return (double) 1000;
         
-        // Store pixel values in four [R,G,B] arrays.
-        int[] up = getColorValues(color[y - 1][x]);
-        int[] down = getColorValues(color[y + 1][x]);
-        int[] left = getColorValues(color[y][x - 1]);
-        int[] right = getColorValues(color[y][x + 1]);
+        // Store pixel values in Color objects.
+        Color up = new Color(color[y - 1][x]);
+        Color down = new Color(color[y + 1][x]);
+        Color left = new Color(color[y][x - 1]);
+        Color right = new Color(color[y][x + 1]);
         
         return Math.sqrt(gradient(up, down) + gradient(left, right));
     }
     
     /**
-     * Returns a 3-integer array representing the [R,G,B] values of the given
-     * Color.
-     * 
-     * @param c the given color
-     * @return an integer array of [R,G,B]
-     */
-    private int[] getColorValues(Color c) {
-        int[] a = new int[3];
-        a[0] = c.getRed();
-        a[1] = c.getGreen();
-        a[2] = c.getBlue();
-        return a;
-    }
-    
-    /**
-     * Returns the gradient computed from the two [R,G,B] arrays <em>a</em> and
+     * Returns the gradient computed from the two Colors <em>a</em> and
      * <em>b</em>.
      * 
-     * @param a
-     * @param b
+     * @param a the first Color
+     * @param b the second Color
      * @return the gradient of <em>a</em> and <em>b</em>.
      */
-    private double gradient(int[] a, int[] b) {
-        return Math.pow(a[0] - b[0], 2) +
-               Math.pow(a[1] - b[1], 2) +
-               Math.pow(a[2] - b[2], 2);
+    private double gradient(Color a, Color b) {
+        return Math.pow(a.getRed() - b.getRed(), 2) +
+               Math.pow(a.getBlue() - b.getBlue(), 2) +
+               Math.pow(a.getGreen() - b.getGreen(), 2);
     }
     
     /**
@@ -251,6 +231,10 @@ public class SeamCarver {
             seam[j - 1] = edgeTo[seam[j]][j];
         }
         
+        // null out our shortest-path arrays for garbage collection
+        distTo = null;
+        edgeTo = null;
+        
         return seam;
 
     }
@@ -299,6 +283,10 @@ public class SeamCarver {
         for (int i = height() - 1; i > 0; i--) {
             seam[i - 1] = edgeTo[i][seam[i]];
         }
+        
+        // null out our shortest-path arrays for garbage collection
+        distTo = null;
+        edgeTo = null;
         
         return seam;
     }
@@ -438,7 +426,7 @@ public class SeamCarver {
             yLast = y;
         }
         
-        Color[][] newColor = new Color[height() - 1][width()];
+        int[][] newColor = new int[height() - 1][width()];
         double[][] newEnergy = new double[height() - 1][width()];
         
         for (int j = 0; j < width(); j++) {
@@ -505,7 +493,7 @@ public class SeamCarver {
             xLast = x;
         }
                 
-        Color[][] newColor = new Color[height()][width() - 1];
+        int[][] newColor = new int[height()][width() - 1];
         double[][] newEnergy = new double[height()][width() - 1];
         
         for (int i = 0; i < height(); i++) {

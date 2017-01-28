@@ -25,7 +25,6 @@ import java.util.Arrays;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    private Picture pic;
     private Color[][] color;
     private double[][] energy;
     
@@ -35,6 +34,7 @@ public class SeamCarver {
     private int[][] edgeTo;
     private int edgeToSink;
     
+    // The current width and height
     private int w;
     private int h;
     
@@ -49,12 +49,9 @@ public class SeamCarver {
     public SeamCarver(Picture picture) {
         if (picture == null) throw new java.lang.NullPointerException();
         
-        // Defensively copy the given picture
-        pic = new Picture(picture);
-        
         // Initialize the dimensions of the picture
-        w = pic.width();
-        h = pic.height();
+        w = picture.width();
+        h = picture.height();
         
         // Store the picture's color information 
         color = new Color[h][w];
@@ -65,7 +62,7 @@ public class SeamCarver {
         // Store color information
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                color[i][j] = pic.get(j, i);
+                color[i][j] = picture.get(j, i);
             }
         }
         
@@ -83,21 +80,16 @@ public class SeamCarver {
      * @return the current picture.
      */
     public Picture picture() {
-        // If pic is unchanged, return a defensive copy of pic
-        if (height() == pic.height() && width() == pic.width())
-            return new Picture(pic);
         
-        // Otherwise, create a new pic with the updated color information,
-        // and return a defensive copy of that pic
-        else {
-            pic = new Picture(width(), height());
-            for (int i = 0; i < height(); i++) {
-                for (int j = 0; j < width(); j++) {
-                    pic.set(j, i, color[i][j]);
-                }
+        // Create a new pic with the stored color information,
+        // and return that pic
+        Picture pic = new Picture(width(), height());
+        for (int i = 0; i < height(); i++) {
+            for (int j = 0; j < width(); j++) {
+                pic.set(j, i, color[i][j]);
             }
-            return new Picture(pic);
         }
+        return new Picture(pic);
     }
     
     /**

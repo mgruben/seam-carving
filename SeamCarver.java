@@ -25,13 +25,16 @@ import java.util.Arrays;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    // [y][x][R,G,B]
+    
+    // The representation of the given image
     private int[][] color;
+    
+    // The energy of each pixel in the image
     private double[][] energy;
     
+    // Arrays and sinks for finding the shortest path through the image energy
     private double[][] distTo;
     private double distToSink;
-    
     private int[][] edgeTo;
     private int edgeToSink;
     
@@ -39,6 +42,8 @@ public class SeamCarver {
     private int w;
     private int h;
     
+    // False if finding or removing a vertical seam,
+    // true if finding or removing a horizontal seam.
     private boolean transposed;
     
     /**
@@ -56,10 +61,10 @@ public class SeamCarver {
         
         // Store the picture's color information in an int array,
         // using the RGB coding described at:
-        // http://docs.oracle.com/javase/7/docs/api/java/awt/Color.html#getRGB()
+        // http://docs.oracle.com/javase/8/docs/api/java/awt/Color.html#getRGB()
         color = new int[h][w];
         
-        // Set the dimensions of the distTo, edgeTo, and energy arrays
+        // Set the dimensions of the energy array
         energy = new double[h][w];
         
         // Store color information
@@ -84,8 +89,7 @@ public class SeamCarver {
      */
     public Picture picture() {
         
-        // Create a new pic with the stored color information,
-        // and return that pic
+        // Create and return a new pic with the stored color information
         Picture pic = new Picture(width(), height());
         for (int i = 0; i < height(); i++) {
             for (int j = 0; j < width(); j++) {
@@ -116,7 +120,7 @@ public class SeamCarver {
     /**
      * Energy of pixel at column x and row y.
      * 
-     * Note that (0,0) is the pixel at the top-left corner of the image.
+     * Note that (0, 0) is the pixel at the top-left corner of the image.
      * 
      * The dual-gradient energy function is used to compute the energy of a
      * pixel.
@@ -185,6 +189,19 @@ public class SeamCarver {
     
     /**
      * Sequence of indices for horizontal seam.
+     *
+     * This method conducts a shortest-path search as if the energy matrix
+     * were an edge-weighted directed acyclic graph.
+     * 
+     * The source vertex is an implicit vertex sitting to the left of the image,
+     * to which all of the left-column pixels are adjacent.
+     * 
+     * The sink vertex is an explicit vertex sitting to the right of the image,
+     * which is (the only vertex) adjacent to all of the right-column pixels.
+     * 
+     * Each pixel can visit only the pixel to its immediate right, the pixel to
+     * its right and above it (if possible), and the pixel to its right and
+     * below it (if possible).
      * 
      * @return the sequence of indices for the horizontal seam.
      */
@@ -199,13 +216,17 @@ public class SeamCarver {
         for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
         for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
-        // Relax the entire left column
+        // Relax the entire left column, since this is our starting column
         for (int i = 0; i < height(); i++) {
             distTo[i][0] = (double) 1000;
             edgeTo[i][0] = -1;
         }
         
-        // Visit all pixels from the left side, diagonally to the right
+        // Visit all pixels from the left side, diagonally to the right,
+        // in keeping with topological order.
+        // The topological order is the reverse of the DFS post-order,
+        // which visits the top-most adjacent pixel first, before it visits
+        // the pixels below.
         for (int depth = height() - 1; depth > 0; depth--) {
             for (int out = 0;
                     out < width() && depth + out < height();
@@ -214,7 +235,8 @@ public class SeamCarver {
             }
         }
         
-        // Visit all pixels from the top, diagonally to the right
+        // Visit all pixels from the top, diagonally to the right,
+        // in keeping with the topological order described above.
         for (int top = 0; top < width(); top++) {
             for (int depth = 0;
                     depth + top < width() && depth < height();
@@ -223,7 +245,7 @@ public class SeamCarver {
             }
         }
         
-        // Add the path to the seam[]
+        // Populate seam[] with the shortest path
         int[] seam = new int[width()];
         seam[width() - 1] = edgeToSink;
         
@@ -242,6 +264,19 @@ public class SeamCarver {
     /**
      * Sequence of indices for vertical seam.
      * 
+     * This method conducts a shortest-path search as if the energy matrix
+     * were an edge-weighted directed acyclic graph.
+     * 
+     * The source vertex is an implicit vertex sitting above the image, to which
+     * all of the top-row pixels are adjacent.
+     * 
+     * The sink vertex is an explicit vertex sitting below the image, which is
+     * (the only vertex) adjacent to all of the bottom-row pixels.
+     * 
+     * Each pixel can visit only the pixel directly below it, the pixel below it
+     * and to its left (if possible), and the pixel below it and to its right
+     * (if possible).
+     * 
      * @return the sequence of indices for the vertical seam.
      */
     public int[] findVerticalSeam() {
@@ -255,11 +290,15 @@ public class SeamCarver {
         for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
         for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
-        // Relax the entire top row
+        // Relax the entire top row, since this is our starting row
         Arrays.fill(distTo[0], (double) 1000);
         Arrays.fill(edgeTo[0], -1);
         
-        // Visit all pixels from the top, diagonally to the right
+        // Visit all pixels from the top, diagonally to the right,
+        // in keeping with topological order.
+        // The topological order is the reverse of the DFS post-order,
+        // which visits the left-most adjacent pixel first, before it visits
+        // pixels to the right.
         for (int top = width() - 1; top >= 0; top--) {
             for (int depth = 0;
                     depth + top < width() && depth < height();
@@ -267,7 +306,8 @@ public class SeamCarver {
                 visit(depth, depth + top);
             }
         }
-        // Visit all pixels from the left side, diagonally to the right
+        // Visit all pixels from the left side, diagonally to the right,
+        // in keeping with the topological order described above.
         for (int depth = 1; depth < height(); depth++) {
             for (int out = 0;
                     out < width() && depth + out < height();
@@ -276,7 +316,7 @@ public class SeamCarver {
             }
         }
         
-        // Add the path to the seam[]
+        // Populate seam[] with the shortest path
         int[] seam = new int[height()];
         seam[height() - 1] = edgeToSink;
         
@@ -292,10 +332,10 @@ public class SeamCarver {
     }
     
     /**
-     * Given an index, relax the vertices adjacent to that index.
+     * Given a pixel's coordinates, relax the pixels adjacent to that pixel.
      * 
-     * @param i the up-and-down index
-     * @param j the left-and-right index
+     * @param i the vertical index of the pixel
+     * @param j the horizontal index of the pixel
      */
     private void visit(int i, int j) {
         if (transposed) {
@@ -356,8 +396,8 @@ public class SeamCarver {
      * 
      * This method should only be called on the "last" vertices in the image.
      * 
-     * @param i the up-and-down index
-     * @param j the left-and-right index
+     * @param i the vertical index of the pixel
+     * @param j the horizontal index of the pixel
      */
     private void relax(int i, int j) {
         if (validIndex(i, j)) {
@@ -370,14 +410,14 @@ public class SeamCarver {
     }
     
     /**
-     * Given index 1 and index 2, relaxes index 2 from index 1.
+     * Given the coordinates of pixel 1 and pixel 2, relax pixel 2 from pixel 1.
      * 
-     * This method should not be called on the "last" vertices in the image.
+     * This method should not be called on the "last" pixels in the image.
      * 
-     * @param i1 the up-and-down index of index 1
-     * @param j1 the left-and-right index of index 1
-     * @param i2 the up-and-down index of index 2
-     * @param j2 the left-and-right index of index 1
+     * @param i1 the vertical index of pixel 1
+     * @param j1 the horizontal index of pixel 1
+     * @param i2 the vertical index of pixel 2
+     * @param j2 the horizontal index of pixel 2
      */
     private void relax(int i1, int j1, int i2, int j2) {
         if (validIndex(i1, j1) && validIndex(i2, j2)) {
@@ -390,10 +430,11 @@ public class SeamCarver {
     }
     
     /**
-     * Is the given index valid?
-     * @param i the up-and-down index
-     * @param j the left-and-right index
-     * @return {@code true} if the current picture contains the index,
+     * Is the given pixel coordinate valid?
+     * 
+     * @param i the vertical index of the pixel
+     * @param j the horizontal index of the pixel
+     * @return {@code true} if the current picture contains the pixel coordinate,
      *         {@code false} otherwise.
      */
     private boolean validIndex(int i, int j) {
@@ -411,6 +452,8 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeHorizontalSeam(int[] seam) {
+        
+        // Check for bad input
         if (height() <= 1)
             throw new java.lang.IllegalArgumentException("Picture too short");
         if (seam == null) throw new java.lang.NullPointerException();
@@ -426,9 +469,11 @@ public class SeamCarver {
             yLast = y;
         }
         
+        // Create replacement arrays
         int[][] newColor = new int[height() - 1][width()];
         double[][] newEnergy = new double[height() - 1][width()];
         
+        // Populate replacement arrays, skipping pixels in the seam
         for (int j = 0; j < width(); j++) {
             int s = seam[j];
             for (int i = 0; i < s; i++) {
@@ -478,6 +523,8 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeVerticalSeam(int[] seam) {
+        
+        // Check for bad input
         if (width() <= 1)
             throw new java.lang.IllegalArgumentException("Picture too narrow");
         if (seam == null) throw new java.lang.NullPointerException();
@@ -492,10 +539,12 @@ public class SeamCarver {
                 throw new java.lang.IllegalArgumentException("Index not adjacent");
             xLast = x;
         }
-                
+        
+        // Create replacement arrays
         int[][] newColor = new int[height()][width() - 1];
         double[][] newEnergy = new double[height()][width() - 1];
         
+        // Populate replacement arrays, skipping pixels in the seam
         for (int i = 0; i < height(); i++) {
             int s = seam[i];
             

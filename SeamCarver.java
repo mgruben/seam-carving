@@ -106,7 +106,7 @@ public class SeamCarver {
      *         negative.
      */
     public double energy(int x, int y) {        
-        if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
+        if (x >= width() || y >= height() || x < 0 || y < 0)
             throw new java.lang.IndexOutOfBoundsException();
         
         return energy[y][x];
@@ -129,11 +129,11 @@ public class SeamCarver {
      *         negative.
      */
     private double calcEnergy(int x, int y) {        
-        if (x >= pic.width() || y >= pic.height() || x < 0 || y < 0)
+        if (x >= width() || y >= height() || x < 0 || y < 0)
             throw new java.lang.IndexOutOfBoundsException();
                 
         // Return 1000.0 for border pixels
-        if (x == 0 || y == 0 || x == pic.width() - 1 || y == pic.height() - 1)
+        if (x == 0 || y == 0 || x == width() - 1 || y == height() - 1)
             return (double) 1000;
         
         // Store pixel values in four [R,G,B] arrays.
@@ -184,11 +184,10 @@ public class SeamCarver {
     }
     
     /**
-     * Transposes the current picture, such that every (x, y) pixel is assigned
-     * instead to (y, x).
+     * Transposes the current picture
      */
     private void transpose() {
-        pic.
+        transposed = !transposed;
     }
     
     /**
@@ -209,27 +208,27 @@ public class SeamCarver {
         Arrays.fill(edgeTo[0], -1);
         
         // Visit all pixels from the top, diagonally to the right
-        for (int top = pic.width() - 1; top >= 0; top--) {
+        for (int top = width() - 1; top >= 0; top--) {
             for (int depth = 0;
-                    depth + top < pic.width() && depth < pic.height();
+                    depth + top < width() && depth < height();
                     depth++) {
                 visit(depth, depth + top);
             }
         }
         // Visit all pixels from the left side, diagonally to the right
-        for (int depth = 1; depth < pic.height(); depth++) {
+        for (int depth = 1; depth < height(); depth++) {
             for (int out = 0;
-                    out < pic.width() && depth + out < pic.height();
+                    out < width() && depth + out < height();
                     out++) {
                 visit(depth + out, out);
             }
         }
         
         // Add the path to the seam[]
-        int[] seam = new int[pic.height()];
-        seam[pic.height() - 1] = edgeToSink;
+        int[] seam = new int[height()];
+        seam[height() - 1] = edgeToSink;
         
-        for (int i = pic.height() - 1; i > 0; i--) {
+        for (int i = height() - 1; i > 0; i--) {
             seam[i - 1] = edgeTo[i][seam[i]];
         }
         
@@ -239,12 +238,12 @@ public class SeamCarver {
     private void visit(int i, int j) {
         
         // Only relax the sink
-        if (i == pic.height() - 1) {
+        if (i == height() - 1) {
             relax(i, j);
         }
         
         // Right edge; relax below and to the left
-        else if (j == pic.width() - 1) {
+        else if (j == width() - 1) {
             relax(i, j, i + 1, j - 1);
             relax(i, j, i + 1, j);
         }
@@ -288,15 +287,15 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeHorizontalSeam(int[] seam) {
-        if (pic.height() <= 1)
+        if (height() <= 1)
             throw new java.lang.IllegalArgumentException("Picture too short");
         if (seam == null) throw new java.lang.NullPointerException();
-        if (seam.length != pic.width())
+        if (seam.length != width())
             throw new java.lang.IllegalArgumentException("Invalid seam length");
         
         int yLast = seam[0];
         for (int y: seam) {
-            if (y >= pic.height() || y < 0)
+            if (y >= height() || y < 0)
                 throw new java.lang.IllegalArgumentException("Index out of bounds");
             if (Math.abs(y - yLast) > 1)
                 throw new java.lang.IllegalArgumentException("Index not adjacent");
@@ -317,15 +316,15 @@ public class SeamCarver {
      *         entries in the given <em>seam</em> differ by more than 1.
      */
     public void removeVerticalSeam(int[] seam) {
-        if (pic.width() <= 1)
+        if (width() <= 1)
             throw new java.lang.IllegalArgumentException("Picture too narrow");
         if (seam == null) throw new java.lang.NullPointerException();
-        if (seam.length != pic.height())
+        if (seam.length != height())
             throw new java.lang.IllegalArgumentException("Invalid seam length");
         
         int xLast = seam[0];
         for (int x: seam) {
-            if (x >= pic.height() || x < 0)
+            if (x >= height() || x < 0)
                 throw new java.lang.IllegalArgumentException("Index out of bounds");
             if (Math.abs(x - xLast) > 1)
                 throw new java.lang.IllegalArgumentException("Index not adjacent");

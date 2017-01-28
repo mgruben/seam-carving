@@ -235,13 +235,6 @@ public class SeamCarver {
     }
     
     /**
-     * Transposes the current picture
-     */
-    private void transpose() {
-        transposed = !transposed;
-    }
-    
-    /**
      * Sequence of indices for vertical seam.
      * 
      * @return 

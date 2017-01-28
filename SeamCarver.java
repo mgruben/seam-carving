@@ -356,19 +356,34 @@ public class SeamCarver {
     }
     
     private void relax(int i, int j) {
-        if (distToSink > distTo[i][j]) {
-            distToSink = distTo[i][j];
-            if (transposed) edgeToSink = i;
-            else edgeToSink = j;
+        if (validIndex(i, j)) {
+            if (distToSink > distTo[i][j]) {
+                distToSink = distTo[i][j];
+                if (transposed) edgeToSink = i;
+                else edgeToSink = j;
+            }
         }
     }
     
     private void relax(int i1, int j1, int i2, int j2) {
-        if (distTo[i2][j2] > distTo[i1][j1] + energy[i2][j2]) {
-            distTo[i2][j2] = distTo[i1][j1] + energy[i2][j2];
-            if (transposed) edgeTo[i2][j2] = i1;
-            else edgeTo[i2][j2] = j1;
+        if (validIndex(i1, j1) && validIndex(i2, j2)) {
+            if (distTo[i2][j2] > distTo[i1][j1] + energy[i2][j2]) {
+                distTo[i2][j2] = distTo[i1][j1] + energy[i2][j2];
+                if (transposed) edgeTo[i2][j2] = i1;
+                else edgeTo[i2][j2] = j1;
+            }
         }
+    }
+    
+    /**
+     * Is the given index valid?
+     * @param i the up-and-down index
+     * @param j the left-and-right index
+     * @return {@code true} if the current picture contains the index,
+     *         {@code false} otherwise.
+     */
+    private boolean validIndex(int i, int j) {
+        return (i >=0 && i < height() && j >= 0 && j < width());
     }
     
     /**

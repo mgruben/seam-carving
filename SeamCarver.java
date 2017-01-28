@@ -25,7 +25,8 @@ import java.util.Arrays;
  * @author Michael <GrubenM@GMail.com>
  */
 public class SeamCarver {
-    private Color[][] color;
+    // [y][x][R,G,B]
+    private int[][][] color;
     private double[][] energy;
     
     private double[][] distTo;
@@ -53,8 +54,8 @@ public class SeamCarver {
         w = picture.width();
         h = picture.height();
         
-        // Store the picture's color information 
-        color = new Color[h][w];
+        // Store the picture's color information in an int array
+        color = new int[h][w][3];
         
         // Set the dimensions of the distTo, edgeTo, and energy arrays
         energy = new double[h][w];
@@ -62,7 +63,10 @@ public class SeamCarver {
         // Store color information
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                color[i][j] = picture.get(j, i);
+                Color c = picture.get(j, i);
+                color[i][j][0] = c.getRed();
+                color[i][j][1] = c.getGreen();
+                color[i][j][2] = c.getBlue();
             }
         }
         
@@ -86,7 +90,10 @@ public class SeamCarver {
         Picture pic = new Picture(width(), height());
         for (int i = 0; i < height(); i++) {
             for (int j = 0; j < width(); j++) {
-                pic.set(j, i, color[i][j]);
+                Color c = new Color(color[i][j][0],
+                        color[i][j][1],
+                        color[i][j][2]);
+                pic.set(j, i, c);
             }
         }
         return new Picture(pic);
@@ -158,27 +165,12 @@ public class SeamCarver {
             return (double) 1000;
         
         // Store pixel values in four [R,G,B] arrays.
-        int[] up = getColorValues(color[y - 1][x]);
-        int[] down = getColorValues(color[y + 1][x]);
-        int[] left = getColorValues(color[y][x - 1]);
-        int[] right = getColorValues(color[y][x + 1]);
+        int[] up = color[y - 1][x];
+        int[] down = color[y + 1][x];
+        int[] left = color[y][x - 1];
+        int[] right = color[y][x + 1];
         
         return Math.sqrt(gradient(up, down) + gradient(left, right));
-    }
-    
-    /**
-     * Returns a 3-integer array representing the [R,G,B] values of the given
-     * Color.
-     * 
-     * @param c the given color
-     * @return an integer array of [R,G,B]
-     */
-    private int[] getColorValues(Color c) {
-        int[] a = new int[3];
-        a[0] = c.getRed();
-        a[1] = c.getGreen();
-        a[2] = c.getBlue();
-        return a;
     }
     
     /**
@@ -438,7 +430,7 @@ public class SeamCarver {
             yLast = y;
         }
         
-        Color[][] newColor = new Color[height() - 1][width()];
+        int[][][] newColor = new int[height() - 1][width()][3];
         double[][] newEnergy = new double[height() - 1][width()];
         
         for (int j = 0; j < width(); j++) {
@@ -505,7 +497,7 @@ public class SeamCarver {
             xLast = x;
         }
                 
-        Color[][] newColor = new Color[height()][width() - 1];
+        int[][][] newColor = new int[height()][width() - 1][3];
         double[][] newEnergy = new double[height()][width() - 1];
         
         for (int i = 0; i < height(); i++) {

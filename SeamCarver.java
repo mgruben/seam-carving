@@ -386,11 +386,23 @@ public class SeamCarver {
         }
         
         int[] horizontalSeam = findHorizontalSeam();
+        Color[][] newColor = new Color[height() - 1][width()];
+        double[][] newEnergy = new double[height() - 1][width()];
         
         for (int j = 0; j < width(); j++) {
+            int s = horizontalSeam[j];
+            for (int i = 0; i < s; i++) {
+                newColor[i][j] = color[i][j];
+                newEnergy[i][j] = energy[i][j];
+            }
             
+            for (int i = s + 1; i < height(); i++) {
+                newColor[i - 1][j] = color[i][j];
+                newEnergy[i - 1][j] = energy[i][j];
+            }
         }
-        
+        color = newColor;
+        energy = newEnergy;
         h--;
         
     }
@@ -423,10 +435,25 @@ public class SeamCarver {
         
         int[] verticalSeam = findVerticalSeam();
         
+        Color[][] newColor = new Color[height()][width() - 1];
+        double[][] newEnergy = new double[height()][width() - 1];
+        
         for (int i = 0; i < height(); i++) {
+            int s = verticalSeam[i];
             
+            for (int j = 0; j < s; j++) {
+                newColor[i][j] = color[i][j];
+                newEnergy[i][j] = energy[i][j];
+            }
+            
+            for (int j = s + 1; j < width(); j++) {
+                newColor[i][j - 1] = color[i][j];
+                newEnergy[i][j - 1] = energy[i][j];
+            }
         }
         
+        color = newColor;
+        energy = newEnergy;
         w--;
     }
 

@@ -1,6 +1,7 @@
 
 import edu.princeton.cs.algs4.Picture;
 import java.awt.Color;
+import java.util.Arrays;
 
 /*
  * Copyright (C) 2017 Michael <GrubenM@GMail.com>
@@ -25,6 +26,13 @@ import java.awt.Color;
  */
 public class SeamCarver {
     Picture pic;
+    int[][] energy;
+    
+    int[][] distTo;
+    int distToSink;
+    
+    int[][] edgeTo;
+    int edgeToSink;
     
     /**
      * Create a seam carver object based on the given picture.
@@ -37,6 +45,11 @@ public class SeamCarver {
         
         // Defensively copy the given picture
         pic = new Picture(picture);
+        
+        
+        // Set the dimensions of the distTo and edgeTo arrays
+        distTo = new int[pic.height()][pic.width()];
+        edgeTo = new int[pic.height()][pic.width()];
     }
     
     /**
@@ -143,6 +156,13 @@ public class SeamCarver {
      * @return 
      */
     public int[] findVerticalSeam() {
+        
+        // Reset our distTo and edgeTo values for a new search
+        distToSink = Integer.MAX_VALUE;
+        edgeToSink = Integer.MAX_VALUE;
+        Arrays.fill(distTo, Integer.MAX_VALUE);
+        Arrays.fill(edgeTo, Integer.MAX_VALUE);
+        
         
     }
     

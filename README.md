@@ -19,6 +19,8 @@ I recommend that this code should only be viewed _after_ you've completed your o
 If you're super stuck, take a break, take a walk, and it will come to you; good luck.
 
 ### Sample Resizings
+These images were produced using the `ResizeDemo.java` source file, available in the [seamCarving-testing.zip](http://coursera.cs.princeton.edu/algs4/testing/seamCarving-testing.zip) file supplied by Princeton.
+
 Original:  
 ![Original Surfers](img/HJocean.png)  
 [Source](http://coursera.cs.princeton.edu/algs4/assignments/seamCarving.html)  

@@ -409,7 +409,7 @@ public class SeamCarver {
      *         {@code false} otherwise.
      */
     private boolean validIndex(int i, int j) {
-        return (i >=0 && i < height() && j >= 0 && j < width());
+        return (i >= 0 && i < height() && j >= 0 && j < width());
     }
     
     /**

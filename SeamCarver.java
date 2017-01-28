@@ -83,7 +83,16 @@ public class SeamCarver {
      * @return the current picture.
      */
     public Picture picture() {
-        return pic;
+        if (height() == pic.height() && width() == pic.width()) return pic;
+        else {
+            pic = new Picture(width(), height());
+            for (int i = 0; i < height(); i++) {
+                for (int j = 0; j < width(); j++) {
+                    pic.set(j, i, color[i][j]);
+                }
+            }
+            return pic;
+        }
     }
     
     /**

@@ -70,8 +70,8 @@ public class SeamCarver {
         }
         
         // Pre-calculate the energy array
-        for (int i = 0; i < pic.height(); i++) {
-            for (int j = 0; j < pic.width(); j++) {
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
                 energy[i][j] = calcEnergy(j, i);
             }
         }
@@ -418,23 +418,21 @@ public class SeamCarver {
         
         // Recalculate the energy along the seam
         for (int j = 0; j < width(); j++) {
-            
+            int s = horizontalSeam[j];
             // Top edge removed
-            if (horizontalSeam[j] == 0) {
-                energy[horizontalSeam[j]][j] = calcEnergy(j, horizontalSeam[j]);
+            if (s == 0) {
+                energy[s][j] = calcEnergy(j, s);
             }
             
             // Bottom edge removed
-            else if (horizontalSeam[j] == height()) {
-                energy[horizontalSeam[j] - 1][j] =
-                    calcEnergy(j, horizontalSeam[j] - 1);
+            else if (s == height()) {
+                energy[s - 1][j] = calcEnergy(j, s - 1);
             }
             
             // Middle pixel removed
             else {
-                energy[horizontalSeam[j]][j] = calcEnergy(j, horizontalSeam[j]);
-                energy[horizontalSeam[j] - 1][j] = 
-                        calcEnergy(j, horizontalSeam[j] - 1);
+                energy[s][j] = calcEnergy(j, s);
+                energy[s - 1][j] = calcEnergy(j, s - 1);
             }
         }
         
@@ -492,23 +490,22 @@ public class SeamCarver {
         
         // Recalculate the energy along the seam
         for (int i = 0; i < height(); i++) {
+            int s = verticalSeam[i];
             
             // Left edge removed
-            if (verticalSeam[i] == 0) {
-                energy[i][verticalSeam[i]] = calcEnergy(verticalSeam[i], i);
+            if (s == 0) {
+                energy[i][s] = calcEnergy(s, i);
             }
             
             // Right edge removed
-            else if (verticalSeam[i] == width()) {
-                energy[i][verticalSeam[i] - 1] =
-                    calcEnergy(verticalSeam[i] - 1, i);
+            else if (s == width()) {
+                energy[i][s - 1] = calcEnergy(s - 1, i);
             }
             
             // Middle pixel removed
             else {
-                energy[i][verticalSeam[i]] = calcEnergy(verticalSeam[i], i);
-                energy[i][verticalSeam[i] - 1] =
-                    calcEnergy(verticalSeam[i] - 1, i);
+                energy[i][s] = calcEnergy(s, i);
+                energy[i][s - 1] = calcEnergy(s - 1, i);
             }
         }
         

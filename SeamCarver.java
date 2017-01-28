@@ -180,7 +180,48 @@ public class SeamCarver {
      * @return 
      */
     public int[] findHorizontalSeam() {
-        return new int[0];
+        transposed = true;
+
+        // Reset our distTo and edgeTo values for a new search
+        distToSink = Double.POSITIVE_INFINITY;
+        edgeToSink = Integer.MAX_VALUE;
+        for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
+        for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
+        
+        // Relax the entire left column
+        for (int i = 0; i < height(); i++) {
+            distTo[i][0] = (double) 1000;
+            edgeTo[i][0] = -1;
+        }
+        
+        // Visit all pixels from the left side, diagonally to the right
+        for (int depth = height() - 1; depth > 0; depth--) {
+            for (int out = 0;
+                    out < width() && depth + out < height();
+                    out++) {
+                visit(depth + out, out);
+            }
+        }
+        
+        // Visit all pixels from the top, diagonally to the right
+        for (int top = 0; top < width(); top++) {
+            for (int depth = 0;
+                    depth + top < width() && depth < height();
+                    depth++) {
+                visit(depth, depth + top);
+            }
+        }
+        
+        // Add the path to the seam[]
+        int[] seam = new int[width()];
+        seam[width() - 1] = edgeToSink;
+        
+        for (int j = width() - 1; j > 0; j--) {
+            seam[j - 1] = edgeTo[seam[j]][j];
+        }
+        
+        return seam;
+
     }
     
     /**
@@ -196,6 +237,7 @@ public class SeamCarver {
      * @return 
      */
     public int[] findVerticalSeam() {
+        transposed = false;
         
         // Reset our distTo and edgeTo values for a new search
         distToSink = Double.POSITIVE_INFINITY;

@@ -35,6 +35,9 @@ public class SeamCarver {
     private int[][] edgeTo;
     private int edgeToSink;
     
+    private int w;
+    private int h;
+    
     private boolean transposed;
     
     /**
@@ -49,17 +52,19 @@ public class SeamCarver {
         // Defensively copy the given picture
         pic = new Picture(picture);
         
+        // Initialize the dimensions of the picture
+        w = pic.width();
+        h = pic.height();
+        
         // Store the picture's color information 
-        color = new Color[pic.height()][pic.width()];
+        color = new Color[h][w];
         
         // Set the dimensions of the distTo, edgeTo, and energy arrays
-        distTo = new double[pic.height()][pic.width()];
-        edgeTo = new int[pic.height()][pic.width()];
-        energy = new double[pic.height()][pic.width()];
+        energy = new double[h][w];
         
         // Store color information
-        for (int i = 0; i < pic.height(); i++) {
-            for (int j = 0; j < pic.width(); j++) {
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
                 color[i][j] = pic.get(j, i);
             }
         }
@@ -87,7 +92,7 @@ public class SeamCarver {
      * @return the width of the current picture.
      */
     public int width() {
-        return pic.width();
+        return w;
     }
     
     /**
@@ -96,7 +101,7 @@ public class SeamCarver {
      * @return the height of the current picture.
      */
     public int height() {
-        return pic.height();
+        return h;
     }
     
     /**
@@ -195,6 +200,8 @@ public class SeamCarver {
         // Reset our distTo and edgeTo values for a new search
         distToSink = Double.POSITIVE_INFINITY;
         edgeToSink = Integer.MAX_VALUE;
+        distTo = new double[h][w];
+        edgeTo = new int[h][w];
         for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
         for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
@@ -245,6 +252,8 @@ public class SeamCarver {
         // Reset our distTo and edgeTo values for a new search
         distToSink = Double.POSITIVE_INFINITY;
         edgeToSink = Integer.MAX_VALUE;
+        distTo = new double[h][w];
+        edgeTo = new int[h][w];
         for (double[] r: distTo) Arrays.fill(r, Double.POSITIVE_INFINITY);
         for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
@@ -376,6 +385,13 @@ public class SeamCarver {
             yLast = y;
         }
         
+        int[] horizontalSeam = findHorizontalSeam();
+        
+        for (int j = 0; j < width(); j++) {
+            
+        }
+        
+        h--;
         
     }
     
@@ -404,6 +420,14 @@ public class SeamCarver {
                 throw new java.lang.IllegalArgumentException("Index not adjacent");
             xLast = x;
         }
+        
+        int[] verticalSeam = findVerticalSeam();
+        
+        for (int i = 0; i < height(); i++) {
+            
+        }
+        
+        w--;
     }
 
     /**

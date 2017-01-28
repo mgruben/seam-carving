@@ -35,6 +35,14 @@ Commons
 Resized:  
 ![Resized Fleet](img/navyResized.png)  
 
+Original:  
+![Original Panorama](img/panorama.jpg)  
+[Source](https://commons.wikimedia.org/wiki/File%3AMonument_Valley_Panorama_2.jpg)  
+Mjones3137 at English Wikipedia [CC BY 3.0](http://creativecommons.org/licenses/by/3.0), via Wikimedia Commons
+
+Resized:  
+![Resized Panorama](img/panoramaResized.png)  
+
 
 Original:  
 ![Original Camel on Sand Dune](img/camel.jpg)  

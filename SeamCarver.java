@@ -179,8 +179,8 @@ public class SeamCarver {
      */
     private double gradient(Color a, Color b) {
         return Math.pow(a.getRed() - b.getRed(), 2) +
-               Math.pow(a.getBlue() - b.getGreen(), 2) +
-               Math.pow(a.getGreen() - b.getBlue(), 2);
+               Math.pow(a.getBlue() - b.getBlue(), 2) +
+               Math.pow(a.getGreen() - b.getGreen(), 2);
     }
     
     /**

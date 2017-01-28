@@ -236,29 +236,56 @@ public class SeamCarver {
     }
     
     private void visit(int i, int j) {
-        
-        // Only relax the sink
-        if (i == height() - 1) {
-            relax(i, j);
+        if (transposed) {
+            // Only relax the sink
+            if (j == width() - 1) {
+                relax(i, j);
+            }
+
+            // Bottom edge; relax to the right and above
+            else if (i == height() - 1) {
+                relax(i, j, i, j + 1);
+                relax(i, j, i - 1, j + 1);
+            }
+
+            // Top edge; relax to the right and below
+            else if (i == 0) {
+                relax(i, j, i, j + 1);
+                relax(i, j, i + 1, j + 1);
+            }
+
+            // Middle pixel; relax right, below, and above
+            else {
+                relax(i, j, i - 1, j + 1);
+                relax(i, j, i, j + 1);
+                relax(i, j, i + 1, j + 1);
+            }
         }
         
-        // Right edge; relax below and to the left
-        else if (j == width() - 1) {
-            relax(i, j, i + 1, j - 1);
-            relax(i, j, i + 1, j);
-        }
-        
-        // Left edge; relax below and to the right
-        else if (j == 0) {
-            relax(i, j, i + 1, j);
-            relax(i, j, i + 1, j + 1);
-        }
-        
-        // Middle pixel; relax left, below, and right
         else {
-            relax(i, j, i + 1, j - 1);
-            relax(i, j, i + 1, j);
-            relax(i, j, i + 1, j + 1);
+            // Only relax the sink
+            if (i == height() - 1) {
+                relax(i, j);
+            }
+
+            // Right edge; relax below and to the left
+            else if (j == width() - 1) {
+                relax(i, j, i + 1, j - 1);
+                relax(i, j, i + 1, j);
+            }
+
+            // Left edge; relax below and to the right
+            else if (j == 0) {
+                relax(i, j, i + 1, j);
+                relax(i, j, i + 1, j + 1);
+            }
+
+            // Middle pixel; relax left, below, and right
+            else {
+                relax(i, j, i + 1, j - 1);
+                relax(i, j, i + 1, j);
+                relax(i, j, i + 1, j + 1);
+            }
         }
     }
     

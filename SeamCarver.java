@@ -265,14 +265,16 @@ public class SeamCarver {
     private void relax(int i, int j) {
         if (distToSink > distTo[i][j]) {
             distToSink = distTo[i][j];
-            edgeToSink = j;
+            if (transposed) edgeToSink = i;
+            else edgeToSink = j;
         }
     }
     
     private void relax(int i1, int j1, int i2, int j2) {
         if (distTo[i2][j2] > distTo[i1][j1] + energy[i2][j2]) {
             distTo[i2][j2] = distTo[i1][j1] + energy[i2][j2];
-            edgeTo[i2][j2] = j1;
+            if (transposed) edgeTo[i2][j2] = i1;
+            else edgeTo[i2][j2] = j1;
         }
     }
     

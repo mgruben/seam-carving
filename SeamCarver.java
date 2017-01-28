@@ -397,12 +397,11 @@ public class SeamCarver {
             yLast = y;
         }
         
-        int[] horizontalSeam = findHorizontalSeam();
         Color[][] newColor = new Color[height() - 1][width()];
         double[][] newEnergy = new double[height() - 1][width()];
         
         for (int j = 0; j < width(); j++) {
-            int s = horizontalSeam[j];
+            int s = seam[j];
             for (int i = 0; i < s; i++) {
                 newColor[i][j] = color[i][j];
                 newEnergy[i][j] = energy[i][j];
@@ -413,12 +412,14 @@ public class SeamCarver {
                 newEnergy[i - 1][j] = energy[i][j];
             }
         }
+        
         color = newColor;
         energy = newEnergy;
+        h--;
         
         // Recalculate the energy along the seam
         for (int j = 0; j < width(); j++) {
-            int s = horizontalSeam[j];
+            int s = seam[j];
             // Top edge removed
             if (s == 0) {
                 energy[s][j] = calcEnergy(j, s);
@@ -434,10 +435,7 @@ public class SeamCarver {
                 energy[s][j] = calcEnergy(j, s);
                 energy[s - 1][j] = calcEnergy(j, s - 1);
             }
-        }
-        
-        h--;
-        
+        }   
     }
     
     /**
@@ -459,20 +457,18 @@ public class SeamCarver {
         
         int xLast = seam[0];
         for (int x: seam) {
-            if (x >= height() || x < 0)
+            if (x >= width() || x < 0)
                 throw new java.lang.IllegalArgumentException("Index out of bounds");
             if (Math.abs(x - xLast) > 1)
                 throw new java.lang.IllegalArgumentException("Index not adjacent");
             xLast = x;
         }
-        
-        int[] verticalSeam = findVerticalSeam();
-        
+                
         Color[][] newColor = new Color[height()][width() - 1];
         double[][] newEnergy = new double[height()][width() - 1];
         
         for (int i = 0; i < height(); i++) {
-            int s = verticalSeam[i];
+            int s = seam[i];
             
             for (int j = 0; j < s; j++) {
                 newColor[i][j] = color[i][j];
@@ -487,10 +483,11 @@ public class SeamCarver {
         
         color = newColor;
         energy = newEnergy;
+        w--;
         
         // Recalculate the energy along the seam
         for (int i = 0; i < height(); i++) {
-            int s = verticalSeam[i];
+            int s = seam[i];
             
             // Left edge removed
             if (s == 0) {
@@ -507,11 +504,7 @@ public class SeamCarver {
                 energy[i][s] = calcEnergy(s, i);
                 energy[i][s - 1] = calcEnergy(s - 1, i);
             }
-        }
-        
-        w--;
-        
-        
+        }        
     }
 
     /**

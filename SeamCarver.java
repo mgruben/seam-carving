@@ -160,8 +160,8 @@ public class SeamCarver {
         // Reset our distTo and edgeTo values for a new search
         distToSink = Integer.MAX_VALUE;
         edgeToSink = Integer.MAX_VALUE;
-        Arrays.fill(distTo, Integer.MAX_VALUE);
-        Arrays.fill(edgeTo, Integer.MAX_VALUE);
+        for (int[] r: distTo) Arrays.fill(r, Integer.MAX_VALUE);
+        for (int[] r: edgeTo) Arrays.fill(r, Integer.MAX_VALUE);
         
         
     }

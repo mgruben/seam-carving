@@ -243,6 +243,10 @@ public class SeamCarver {
             seam[j - 1] = edgeTo[seam[j]][j];
         }
         
+        // null out our shortest-path arrays for garbage collection
+        distTo = null;
+        edgeTo = null;
+        
         return seam;
 
     }
@@ -291,6 +295,10 @@ public class SeamCarver {
         for (int i = height() - 1; i > 0; i--) {
             seam[i - 1] = edgeTo[i][seam[i]];
         }
+        
+        // null out our shortest-path arrays for garbage collection
+        distTo = null;
+        edgeTo = null;
         
         return seam;
     }
